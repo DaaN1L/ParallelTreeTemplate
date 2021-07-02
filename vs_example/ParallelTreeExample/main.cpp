@@ -104,7 +104,7 @@ public:
         // Потомки
         std::vector< std::unique_ptr<Node> > childNodes;
 
-        // Если lastNode == n, то мы дошли до листа дерева и потомков у текущего
+        // Если lastNode == n - 1, то мы дошли до листа дерева и потомков у текущего
         // узла нет.
         if (lastNode == g.adjacencyList.size() - 1) {
             // Если текущее решение лучше рекорда, то меняем рекорд
@@ -144,7 +144,7 @@ public:
 
 
 int main() {
-    vector <vector<int>> v = { {1}, {0, 2, 3}, {1,3}, {1, 2} };
+    vector <vector<int>> v = { {1,4}, {0, 2, 3, 4}, {1,3, 4}, {1, 2}, {0, 1, 2} };
     Graph g(v);
 
     // Вначале каждй узел раскрашен в разный цвет 
@@ -157,8 +157,10 @@ int main() {
     unique_ptr<Record> bestSolution = parallelTree(move(root), initialRecord);
     const MyRecord* bestSolutionCast = reinterpret_cast<const MyRecord*>(bestSolution.get());
 
+    cout << "Correct graph coloring: ";
     for (int i = 0; i < v.size(); ++i)
         cout << bestSolutionCast->colors[i] << " ";
+    cout << "\nChromatic number of a graph: " << count_unique_elem(bestSolutionCast->colors) << endl;
 
     return 0;
 }
