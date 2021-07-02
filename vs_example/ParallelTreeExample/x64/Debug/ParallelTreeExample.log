@@ -1,5 +1,7 @@
 ﻿  main.cpp
 C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(27,51): warning C4267: return: преобразование из "size_t" в "int"; возможна потеря данных
 C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(151,37): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\memory(3580,35): error C2512: MyNode::MyNode: нет подходящего конструктора по умолчанию
-C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(154): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::unique_ptr<MyNode,std::default_delete<MyNode>> std::make_unique<MyNode,,0>(void)"
+  LINK : не найден или не выполнена сборка C:\Users\Даниила\Source\Repos\ParallelTreeTemplate\vs_example\x64\Debug\ParallelTreeExample.exe при последней инкрементной компоновке; выполняется полная компоновка
+  ParallelTreeExample.vcxproj -> C:\Users\Даниила\Source\Repos\ParallelTreeTemplate\vs_example\x64\Debug\ParallelTreeExample.exe
+  Copy DLLs
+  Скопировано файлов: 0.

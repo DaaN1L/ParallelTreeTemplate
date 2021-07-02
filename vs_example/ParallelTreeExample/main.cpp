@@ -29,10 +29,10 @@ int count_unique_elem(vector<int> arr) {
 
 // Функция, которая проверяет, правильно ли раскрашен граф
 bool is_correctly_colored(Graph g) {
-    
+
     // Проходим по каждой вершине графа
     for (int i = 0; i < g.adjacencyList.size(); ++i) {
-        
+
         // Вершина должна иметь цвет
         if (g.colors[i] == -1)
             continue;
@@ -55,11 +55,11 @@ public:
     // Вектор с решением
     vector<int> colors;
 
-    MyRecord(int n): colors(n) {
+    MyRecord(int n) : colors(n) {
         for (int i = 0; i < n; ++i)
             colors[i] = i;
     }
-    
+
     /*
      * Должна возвращать true, если данный рекорд лучше (меньше в задачах
      * минимизации и больше в задачах максимизации), чем other
@@ -69,7 +69,7 @@ public:
         const MyRecord& otherCast = static_cast<const MyRecord&>(other);
         return count_unique_elem(colors) < count_unique_elem(otherCast.colors);
     }
-    
+
     // Должен возвращать копию данного рекорда.
     std::unique_ptr<Record> clone() const override
     {
@@ -82,17 +82,17 @@ public:
 // методы process и hasHigherPriority.
 class MyNode : public Node
 {
-public: 
+public:
     Graph g;
     // Какой узел мы меняли последним
     int lastNode;
-    
+
     MyNode(const Graph& g) : lastNode(-1), g(g) {}
 
     /*
      * Функция, которая обрабатывает текущий узел и возвращает вектор
      * потомков этого узла (или пустой вектор, если потомков нет).
-     * 
+     *
      * Она не должна менять глобальных переменных, т.к. она будет исполняться
      * в нескольких потоках. Рекорд менять можно (при этом синхронизация не
      * требуется).
@@ -106,7 +106,7 @@ public:
 
         // Если lastNode == n, то мы дошли до листа дерева и потомков у текущего
         // узла нет.
-        if (lastNode == g.adjacencyList.size()) {
+        if (lastNode == g.adjacencyList.size() - 1) {
             // Если текущее решение лучше рекорда, то меняем рекорд
             if (count_unique_elem(g.colors) < count_unique_elem(recordCast.colors))
                 recordCast.colors = g.colors;
@@ -129,7 +129,7 @@ public:
             return childNodes;
         }
     }
-    
+
     /*
      * Возвращает true, если приоритет данного задания больше, чем other.
      * Задания с большим приоритетом будут обрабатываться раньше.
@@ -149,16 +149,16 @@ int main() {
 
     // Вначале каждй узел раскрашен в разный цвет 
     MyRecord initialRecord(v.size());
-    
+
     // Корень дерева вариантов.
-    unique_ptr<MyNode> root = make_unique<MyNode>();
-    
+    unique_ptr<MyNode> root = make_unique<MyNode>(g);
+
     // Параллельно находим решение
     unique_ptr<Record> bestSolution = parallelTree(move(root), initialRecord);
     const MyRecord* bestSolutionCast = reinterpret_cast<const MyRecord*>(bestSolution.get());
 
     for (int i = 0; i < v.size(); ++i)
         cout << bestSolutionCast->colors[i] << " ";
-    
+
     return 0;
 }
