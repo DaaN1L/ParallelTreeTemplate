@@ -1,0 +1,15 @@
+﻿  main.cpp
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(19,1): error C2143: синтаксическая ошибка: отсутствие ";" перед "}"
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(19,1): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(24,1): error C2144: синтаксическая ошибка: перед "bool" требуется ";"
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(26,18): error C2039: "colors": не является членом "std::vector<std::vector<int,std::allocator<int>>,std::allocator<std::vector<int,std::allocator<int>>>>".
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(21): message : см. объявление "std::vector<std::vector<int,std::allocator<int>>,std::allocator<std::vector<int,std::allocator<int>>>>"
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(28,5): error C2059: синтаксическая ошибка: }
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(53,16): error C3861: f: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(53,23): error C3861: f: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(98,16): error C3861: f: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(98,23): error C3861: f: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(109,16): error C3861: constraint: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(114,16): error C3861: constraint: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(130,16): error C3861: f: идентификатор не найден
+C:\Users\Даниила\source\repos\ParallelTreeTemplate\vs_example\ParallelTreeExample\main.cpp(130,23): error C3861: f: идентификатор не найден
