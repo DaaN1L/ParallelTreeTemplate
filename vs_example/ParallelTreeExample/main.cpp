@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <set>
 
 #include <ParallelTree.hpp>
 
@@ -17,7 +18,14 @@ using namespace std;
 struct Graph {
     vector <vector<int>> adjacencyList;
     vector<int> colors;
+
+    Graph(vector< vector<int> > v) : adjacencyList(v), colors(v.size(), -1) {}
 };
+
+// Функция, которая считает количество различных цветов 
+int count_unique_elem(vector<int> arr) {
+    return set<int>(arr.begin(), arr.end()).size();
+}
 
 // Функция, которая проверяет, правильно ли раскрашен граф
 bool is_correctly_colored(Graph g) {
@@ -41,15 +49,16 @@ bool is_correctly_colored(Graph g) {
 
 // Рекорд. Должен наследоваться от класса Record и реализовать методы
 // betterThan и clone.
-class ExampleRecord : public Record
+class MyRecord : public Record
 {
 public:
-    ExampleRecord() :
-        x(4, 0)
-    {}
-    
     // Вектор с решением
-    vector<int> x;
+    vector<int> colors;
+
+    MyRecord(int n): colors(n) {
+        for (int i = 0; i < n; ++i)
+            colors[i] = i;
+    }
     
     /*
      * Должна возвращать true, если данный рекорд лучше (меньше в задачах
@@ -57,34 +66,29 @@ public:
      */
     bool betterThan(const Record& other) const override
     {
-        const ExampleRecord& otherCast = static_cast<const ExampleRecord&>(other);
-        // Поскольку у нас задача максимизации, то используем оператор "больше".
-        return f(x) > f(otherCast.x);
+        const MyRecord& otherCast = static_cast<const MyRecord&>(other);
+        return count_unique_elem(colors) < count_unique_elem(otherCast.colors);
     }
     
     // Должен возвращать копию данного рекорда.
     std::unique_ptr<Record> clone() const override
     {
         // Здесь просто используем конструктор копий
-        return std::make_unique<ExampleRecord>(*this);
+        return std::make_unique<MyRecord>(*this);
     }
 };
 
 // Узел дерева вариантов. Должен наследоваться от класса Node и реализовать
 // методы process и hasHigherPriority.
-class ExampleNode : public Node
+class MyNode : public Node
 {
-public:
-    ExampleNode() :
-        x(4, 0),
-        lastX(-1)
-    {}
+public: 
+    Graph g;
+    // Какой узел мы меняли последним
+    int lastNode;
     
-    // Вектор с 4 переменными x.
-    vector<int> x;
-    // Какой x мы меняли последним
-    int lastX;
-    
+    MyNode(const Graph& g) : lastNode(-1), g(g) {}
+
     /*
      * Функция, которая обрабатывает текущий узел и возвращает вектор
      * потомков этого узла (или пустой вектор, если потомков нет).
@@ -95,34 +99,33 @@ public:
      */
     std::vector< std::unique_ptr<Node> > process(Record& record) override
     {
-        ExampleRecord& recordCast = static_cast<ExampleRecord&>(record);
-        
+        MyRecord& recordCast = static_cast<MyRecord&>(record);
+
         // Потомки
         std::vector< std::unique_ptr<Node> > childNodes;
-        // Если lastX == 3, то мы дошли до листа дерева и потомков у текущего
+
+        // Если lastNode == n, то мы дошли до листа дерева и потомков у текущего
         // узла нет.
-        if(lastX == 3)
-        {
+        if (lastNode == g.adjacencyList.size()) {
             // Если текущее решение лучше рекорда, то меняем рекорд
-            if(f(x) > f(recordCast.x))
-                recordCast.x = x;
+            if (count_unique_elem(g.colors) < count_unique_elem(recordCast.colors))
+                recordCast.colors = g.colors;
+
             // Потомков нет. childNodes пуст.
             return childNodes;
         }
-        else
-        {
-            lastX += 1;
-            // Рассматриваем 2 случая: x[lastX] = 0 и x[lastX] = 1
-            x[lastX] = 0;
-            // Если ограничение не выполняется, то отсекаем ветвь.
-            if(constraint(x))
-                childNodes.emplace_back(new ExampleNode(*this));
-            
-            x[lastX] = 1;
-            // Если ограничение не выполняется, то отсекаем ветвь.
-            if(constraint(x))
-                childNodes.emplace_back(new ExampleNode(*this));
-            
+        else {
+            lastNode += 1;
+
+            // Рассматриваем n случаев (для каждого цвета)
+            for (int i = 0; i < g.adjacencyList.size(); ++i) {
+                g.colors[lastNode] = i;
+
+                // Если раскраска неправильная, то отсекаем ветвь
+                if (is_correctly_colored(g))
+                    childNodes.emplace_back(new MyNode(*this));
+            }
+
             return childNodes;
         }
     }
@@ -131,31 +134,31 @@ public:
      * Возвращает true, если приоритет данного задания больше, чем other.
      * Задания с большим приоритетом будут обрабатываться раньше.
      */
-    bool hasHigherPriority(const Node& other) const override
-    {
-        const ExampleNode& otherCast = static_cast<const ExampleNode&>(other);
-        // Если у данного узда значение f больше, то считаем что у него больше
-        // приоритет.
-        return f(x) > f(otherCast.x);
+    bool hasHigherPriority(const Node& other) const override {
+        const MyNode& otherCast = static_cast<const MyNode&>(other);
+        // Если у данного узла меньше уникальных цветов, 
+        // то считаем что у него больше приоритет.
+        return count_unique_elem(g.colors) < count_unique_elem(otherCast.g.colors);
     }
 };
 
 
-int main()
-{
-    // Полагаем в начале все x равными 0 и начальный рекорд равным 0.
-    ExampleRecord initialRecord;
+int main() {
+    vector <vector<int>> v = { {1}, {0, 2, 3}, {1,3}, {1, 2} };
+    Graph g(v);
+
+    // Вначале каждй узел раскрашен в разный цвет 
+    MyRecord initialRecord(v.size());
+    
     // Корень дерева вариантов.
-    unique_ptr<ExampleNode> root = make_unique<ExampleNode>();
+    unique_ptr<MyNode> root = make_unique<MyNode>();
+    
     // Параллельно находим решение
     unique_ptr<Record> bestSolution = parallelTree(move(root), initialRecord);
-    const ExampleRecord* bestSolutionCast = reinterpret_cast<const ExampleRecord*>(bestSolution.get());
-    
-    cout << "x0 = " << bestSolutionCast->x[0] << ",  "
-         << "x1 = " << bestSolutionCast->x[1] << ",  "
-         << "x2 = " << bestSolutionCast->x[2] << ",  "
-         << "x2 = " << bestSolutionCast->x[3] << ",  "
-         << endl;
+    const MyRecord* bestSolutionCast = reinterpret_cast<const MyRecord*>(bestSolution.get());
+
+    for (int i = 0; i < v.size(); ++i)
+        cout << bestSolutionCast->colors[i] << " ";
     
     return 0;
 }
