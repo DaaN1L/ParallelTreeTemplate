@@ -10,6 +10,7 @@
 #include <memory>
 #include <vector>
 #include <set>
+#include <chrono>
 
 #include <ParallelTree.hpp>
 
@@ -155,13 +156,17 @@ int main() {
     unique_ptr<MyNode> root = make_unique<MyNode>(g);
 
     // Параллельно находим решение
-    unique_ptr<Record> bestSolution = parallelTree(move(root), initialRecord);
+    auto startTime = chrono::high_resolution_clock::now();
+    unique_ptr<Record> bestSolution = parallelTree(move(root), initialRecord, 2);
     const MyRecord* bestSolutionCast = reinterpret_cast<const MyRecord*>(bestSolution.get());
+    auto finishTime = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(finishTime - startTime);
 
     cout << "Correct graph coloring: ";
     for (int i = 0; i < v.size(); ++i)
         cout << bestSolutionCast->colors[i] << " ";
     cout << "\nChromatic number of a graph: " << count_unique_elem(bestSolutionCast->colors) << endl;
+    cout << "Finished in " << duration.count() << " microseconds" << endl;
 
     return 0;
 }
