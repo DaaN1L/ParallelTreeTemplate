@@ -19,6 +19,7 @@ struct Graph {
     vector <vector<int>> adjacencyList;
     vector<int> colors;
 
+    // Изначально цвета узлов графа не заполнены и равны -1
     Graph(vector< vector<int> > v) : adjacencyList(v), colors(v.size(), -1) {}
 };
 
